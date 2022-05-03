@@ -4,7 +4,7 @@
   "description": "En serio?",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 0",
+    "test": "mocha ./test/*.mjs",
     "start": "node src/index.mjs"
   },
   "repository": {
@@ -19,8 +19,13 @@
   },
   "homepage": "https://github.com/Diseno-de-Aplicaciones-Web/ExpressBasics#readme",
   "dependencies": {
-    "dotenv": "^16.0.0",
     "express": "^4.17.3",
     "sqlite3": "^5.0.6"
+  },
+  "devDependencies": {
+    "chai-json-schema": "^1.5.1",
+    "chai-things": "^0.2.0",
+    "mocha": "^10.0.0",
+    "supertest": "^6.2.3"
   }
 }
