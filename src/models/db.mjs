@@ -4,7 +4,7 @@ export const db = new sqlite3.Database('./tasks.db', (err) => {
     if (err) {
         throw err.message;
     }
-    console.log('Connected to the chat database.');
+    console.log('Connected to database.');
 });
 
 db.run(`
