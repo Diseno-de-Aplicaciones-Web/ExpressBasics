@@ -19,7 +19,7 @@ try {
     app.post(PATH_PREFIX+"/users/", jsonParser, validateUserJSON, postUserController);
 
     app.get(PATH_PREFIX+"/tasks/:id", authMiddleware, getOneTaskController);
-    app.get(PATH_PREFIX+"/tasks/", authMiddleware, getTaskController);
+    app.get(PATH_PREFIX+"/tasks/", authMiddleware, getAllTasksController);
     app.post(PATH_PREFIX+"/task/", authMiddleware, jsonParser, validateNewTaskJSON, postTaskController);
     app.put(PATH_PREFIX+"/task/", authMiddleware, jsonParser, validateTaskJSON, putTaskController);
     app.delete(PATH_PREFIX+"/task/", authMiddleware, jsonParser, validateDeleteTaskJSON, deleteTaskController);
