@@ -11,7 +11,8 @@ export const newTaskSchema = {
             type: "boolean"
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    required: ["description", "done"]
 }
 
 export const taskSchema = {
@@ -34,7 +35,8 @@ export const taskSchema = {
             type: "boolean"
         },
     },
-    additionalProperties: false
+    additionalProperties: false,
+    required: ["id", "description", "done"]
 }
 
 export const deleteTaskSchema = {
@@ -49,5 +51,6 @@ export const deleteTaskSchema = {
             }
         }
     },
-    additionalProperties: false
+    additionalProperties: false,
+    required: ["id"]
 }

@@ -11,5 +11,6 @@ export const userSchema = {
             type: "string"
         },
     },
-    additionalProperties: false
+    additionalProperties: false,
+    required: ["name", "password"]
 }
