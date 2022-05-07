@@ -4,14 +4,15 @@ import { requestLog } from "./middleware/requestsLog.mjs";
 import { authMiddleware } from "./middleware/authorization.mjs";
 import { validateUserJSON } from "./middleware/jsonValidator.mjs";
 import { validateNewTaskJSON, validateTaskJSON, validateDeleteTaskJSON } from "./middleware/jsonValidator.mjs";
+import { errorsHandler } from "./middleware/errorsHandler.mjs";
 
 import { postUserController } from "./controllers/usersControllers.mjs";
 import { deleteTaskController, getOneTaskController, getAllTasksController, postTaskController, putTaskController } from "./controllers/tasksControllers.mjs";
 
 const PATH_PREFIX = "/api/v0.0"
-const app = express();
-try {
 
+try {
+    const app = express();
     const jsonParser = express.json();
 
     app.use(requestLog);
@@ -24,9 +25,11 @@ try {
     app.put(PATH_PREFIX+"/task/", authMiddleware, jsonParser, validateTaskJSON, putTaskController);
     app.delete(PATH_PREFIX+"/task/", authMiddleware, jsonParser, validateDeleteTaskJSON, deleteTaskController);
 
+    app.use(errorsHandler);
+
     app.listen(process.env.PORT || 3000,()=>{
         console.log("Express running...");
     });
 } catch (err) {
-    console.error(err);
+    console.error("Error starting service:", err);
 }
