@@ -1,3 +1,4 @@
+import { db } from "../models/db.mjs";
 import { authenticateUserSQL } from "../models/usersModels.mjs";
 
 function decodeAuthBasic (headerContent) {
@@ -11,33 +12,24 @@ function decodeAuthBasic (headerContent) {
     }
 }
 
-export function authenticateUser (username, password) {
-    try {
-        db.get(
-            authenticateUserSQL, [username, password],
-            (err, data) => {
-                if (err) throw err
-                else if (data) return true
-                else return false
-            }
-        )
-    } catch (error) {
-        throw error
-    }
-}
-
 export function authMiddleware( request, response, next ) {
     try {
         const { method, username, password } = decodeAuthBasic(request.headers.authorization);
 
         if ( method != "Basic" ) throw "Invalid authorization method. Use Basic instead."
     
-        if ( authenticateUser(username, password) ) {
-            response.locals.authorization = { username }
-            next()
-        }  else {
-            throw "Authorization error"
-        }
+        db.get(
+            authenticateUserSQL, [username, password],
+            (err, data) => {
+                if (err) throw err
+                if (data) {
+                    response.locals.authorization = { username };
+                    next();
+                }
+                else throw "Bad authentication"
+            }
+        )
+
     } catch (err) {
         console.error(err);
         response.sendStatus(401)
