@@ -1,9 +1,10 @@
-import { tasks } from "../models/tasksModels.mjs"
 import { db } from "../models/db.mjs"
+
+import { getTasksSQL, addTaskSQL } from "../models/tasksModels.mjs"
 
 export function getAllTasksController (request, response) {
     db.all(
-        `SELECT id, description, done FROM tasks`,
+        getTasksSQL,
         (err,data)=>{
             if ( err ) {
                 console.error(err);
@@ -30,7 +31,8 @@ export function getOneTaskController (request, response) {
 export function postTaskController (request, response) {
     const { description, done } = request.body;
     db.run(
-        `INSERT INTO tasks(description, done) VALUES ("${description}", ${done})`,
+        addTaskSQL,
+        [description, done],
         (err)=>{
             if (err) {
                 console.error(err);
