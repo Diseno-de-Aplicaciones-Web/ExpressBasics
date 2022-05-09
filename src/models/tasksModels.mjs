@@ -16,3 +16,9 @@ export const createTaskTableSQL = `
 export const getTasksSQL = `SELECT id, description, done FROM tasks`;
 
 export const addTaskSQL = `INSERT INTO tasks(description, done) VALUES (?, ?)`;
+
+export const getOneTaskByIdSQL = `SELECT id, description, done FROM tasks WHERE id = ?`;
+
+export const updateTaskSQL = `UPDATE tasks SET description=?, done=? WHERE id=?`;
+
+export const deleteTaskSQL = `DELETE task WHERE id=?`;

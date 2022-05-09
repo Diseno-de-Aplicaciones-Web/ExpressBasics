@@ -1,63 +1,83 @@
 import { db } from "../models/db.mjs"
 
-import { getTasksSQL, addTaskSQL } from "../models/tasksModels.mjs"
+import { requestError } from "./auxiliar.mjs";
+import { getTasksSQL, addTaskSQL, getOneTaskByIdSQL, updateTaskSQL, deleteTaskSQL } from "../models/tasksModels.mjs"
 
 export function getAllTasksController (request, response) {
-    db.all(
-        getTasksSQL,
-        (err,data)=>{
-            if ( err ) {
-                console.error(err);
-                response.sendStatus(500)
-            } else {
-                response.json(data)
+    try {
+        db.all(
+            getTasksSQL,
+            (err,data)=>{
+                if ( err ) throw err
+                else response.json(data)
             }
-        }
-    )
+        )
+    } catch (err) {
+        requestError(err, response)
+    }
+
 }
 
 export function getOneTaskController (request, response) {
     try {
-        const task = tasks.find(
-            item => item.id === parseInt(request.params.id)
+        db.get(
+            getOneTaskByIdSQL, request.params.id,
+            (err, data) => {
+                if ( err ) throw err
+                else if ( data ) response.json(data)
+                else response.sendStatus(404)
+            }
         )
-        if ( task ) response.json(task)
-        else response.sendStatus(404);
     } catch (err) {
-        response.sendStatus(400)
+        requestError(err, response)
     }
 }
 
 export function postTaskController (request, response) {
-    const { description, done } = request.body;
-    db.run(
-        addTaskSQL,
-        [description, done],
-        (err)=>{
-            if (err) {
-                console.error(err);
-                response.sendStatus(500)
-            } else {
-                response.sendStatus(201)
+    try {
+        db.run(
+            addTaskSQL, [request.body.description, request.body.done],
+            (err)=>{
+                if (err) throw err
+                else response.sendStatus(201)
             }
-        }
-    )
+        )
+    } catch (err) {
+        requestError(err, response)
+    }
+
 }
 
 export function putTaskController (request, response) {
-    const updatedTask = request.body;
-    const oldTaskIdx = tasks.findIndex(
-        item => item.id === updatedTask.id
-    )
-    tasks[oldTaskIdx] = updatedTask;
-    response.sendStatus(200);
+    try {
+        db.get(updateTaskSQL, request.body.id,
+            (err, data)=>{
+                if (err) throw err;
+                else if (data) db.run(
+                    addTaskSQL, [request.body.description, request.body.done, request.body.id],
+                    (err)=>{
+                        if (err) throw err
+                        else {
+                            response.sendStatus(200)
+                        }
+                    }
+                )
+                else response.sendStatus(404);
+            }
+        )
+    } catch (err) {
+        requestError(err, response)
+    }
 }
 
 export function deleteTaskController (request, response) {
-    const updatedTask = request.body;
-    const oldTaskIdx = tasks.findIndex(
-        item => item.id === updatedTask.id
-    )
-    tasks.splice(oldTaskIdx,1);
-    response.sendStatus(200)
+    try {
+        db.run(deleteTaskSQL, request.body.id,
+            (err)=>{
+                if (err) throw err
+                else response.sendStatus(200);
+            })
+    } catch (err) {
+        requestError(err, response)
+    }
 }
