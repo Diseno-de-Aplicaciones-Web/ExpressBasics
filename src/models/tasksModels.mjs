@@ -4,7 +4,7 @@ export const createTaskTableSQL = `
         tasks (
             id INTEGER PRIMARY KEY,
             description VARCHAR(100) NOT NULL,
-            done BOOLEAN DEFAULT false NOT NULL
+            done BOOLEAN DEFAULT false NOT NULL,
             id_user INTEGER NOT NULL,
             FOREIGN KEY ( id_user )
                 REFERENCES users (id) 
