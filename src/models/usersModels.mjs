@@ -10,4 +10,4 @@ export const createUserTableSQL = `
 
 export const addUserSQL = `INSERT INTO users(name, password) VALUES (?, ?)`;
 
-export const authenticateUserSQL = `SELECT 1 FROM users WHERE name=? AND password=?`;
+export const authenticateUserSQL = `SELECT id, name FROM users WHERE name=? AND password=?`;

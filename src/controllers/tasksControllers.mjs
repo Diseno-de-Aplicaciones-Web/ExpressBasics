@@ -6,7 +6,7 @@ import { getTasksSQL, addTaskSQL, getOneTaskByIdSQL, updateTaskSQL, deleteTaskSQ
 export function getAllTasksController (request, response) {
     try {
         db.all(
-            getTasksSQL,
+            getTasksSQL, response.locals.authorization.id,
             (err,data)=>{
                 if ( err ) throw err
                 else response.json(data)
@@ -21,7 +21,8 @@ export function getAllTasksController (request, response) {
 export function getOneTaskController (request, response) {
     try {
         db.get(
-            getOneTaskByIdSQL, request.params.id,
+            getOneTaskByIdSQL,
+            [request.params.id, response.locals.authorization.id],
             (err, data) => {
                 if ( err ) throw err
                 else if ( data ) response.json(data)
@@ -36,7 +37,12 @@ export function getOneTaskController (request, response) {
 export function postTaskController (request, response) {
     try {
         db.run(
-            addTaskSQL, [request.body.description, request.body.done],
+            addTaskSQL,
+            [
+                request.body.description,
+                request.body.done,
+                response.locals.authorization.id
+            ],
             (err)=>{
                 if (err) throw err
                 else response.sendStatus(201)
@@ -50,11 +56,18 @@ export function postTaskController (request, response) {
 
 export function putTaskController (request, response) {
     try {
-        db.get(updateTaskSQL, request.body.id,
+        db.get(getOneTaskByIdSQL,
+            [request.body.id, response.locals.authorization.id],
             (err, data)=>{
                 if (err) throw err;
                 else if (data) db.run(
-                    addTaskSQL, [request.body.description, request.body.done, request.body.id],
+                    updateTaskSQL,
+                    [
+                        request.body.description,
+                        request.body.done,
+                        request.body.id,
+                        response.locals.authorization.id
+                    ],
                     (err)=>{
                         if (err) throw err
                         else {
@@ -72,7 +85,11 @@ export function putTaskController (request, response) {
 
 export function deleteTaskController (request, response) {
     try {
-        db.run(deleteTaskSQL, request.body.id,
+        db.run(deleteTaskSQL,
+            [
+                request.body.id,
+                response.locals.authorization.id
+            ],
             (err)=>{
                 if (err) throw err
                 else response.sendStatus(200);

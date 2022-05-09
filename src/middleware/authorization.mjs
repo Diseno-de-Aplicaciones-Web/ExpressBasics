@@ -23,7 +23,7 @@ export function authMiddleware( request, response, next ) {
             (err, data) => {
                 if (err) throw err
                 if (data) {
-                    response.locals.authorization = { username };
+                    response.locals.authorization = { name: data.name, id: data.id };
                     next();
                 }
                 else throw "Bad authentication"
