@@ -7,3 +7,5 @@ export const createUserTableSQL = `
             password TEXT NOT NULL
         )
 `;
+
+export const authenticateUserSQL = `SELECT 1 FROM users WHERE name=? AND password=?`;
